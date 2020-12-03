@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Sistema escolar V4</title>
+    <link rel='stylesheet' href='node_modules/bulma/css/bulma.min.css'>
+    <script src='node_modules/axios/dist/axios.min.js'></script>
+</head>
+<body>
+<div class="box">
+    <div class="columns is-centered is-2">
+        <div class="column is-half">
+            <div class="notification is-link">
+                <h1>Sistema escolar v4</h1>
+            </div>
+            <!--<form action="login.php" method="POST">-->
+            <form action="api/index.php/login/" method="post">
+                <div class="field">
+                    <label class="label" for="usuario"> Usuario</label>
+                    <input class="input" type="text" id="usuario" name="usuario">
+                </div>
+                <div class="field">
+                    <label class="label" for="password">Password</label>
+                    <input class="input" type="password" id="password" name="password">
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <input class="button" type="button" value="Enviar" onclick="login()">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+    <script>
+        function login() {
+           /* axios.post('api/index.php/login/$(document.forms[0].usuario.value}',{
+
+            })*/
+           /* axios.get('http://webcode.me').then(resp=>{
+                console.log('hola');
+            });*/
+            axios.post(`api/index.php/login/${document.forms[0].usuario.value}`, {
+                usuario: document.forms[0].usuario.value,
+                password: document.forms[0].password.value,
+            })
+                .then(resp=> {
+                    if(resp.data.aceptado){
+                       alert(`Bienvenido:${resp.data.nombre_perfil}`)
+                        setTimeout(`location.href='inicio.php?id_usuario=${resp.data.id_usuario}'`,500)
+                    }
+                    else{
+                        alert("El usuario y/o contraseña incorrectos")
+                    }
+
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+    </script>
+
+
+</body>
