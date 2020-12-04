@@ -43,25 +43,63 @@ $app->post('/login/{usuario}', function (Request $request, Response $response, a
     return $response;
 });
 
-$app->post('/insertar', function (Request $request, Response $response, array $args) {
+$app->post('/insertar/', function (Request $request, Response $response, array $args) {
     $data = json_decode($request->getBody()->getContents(),false);
 
 
-    DB::table('calificaciones')->insert(
-        ['calificacion'=>$data->calificacion]
+    $calificacion= DB::table('calificaciones')->insert(
+        ['calificacion'=>$data->calificacion,
+        'id_alumno'=>$data->id_alumno,
+        'id_asignatura'=>$data->id_asignatura
+        ]
     );
     // var_dump($user);
     $msg = new stdClass();
-    $msg->mensaje = 'OK aceptado';
+    $msg->mensaje = 'Error al guardar';
 
-    /*if($user->password == $data->password){
-        $msg->aceptado = true;
-        $msg->nombre_perfil = $user->nombre_perfil;
-        $msg->id_usuario = $user->id_usuario;
+    if($calificacion){
+        $msg->mensaje = 'Calificación guardada';
     }
-    else{
-        $msg->aceptado = false;
-    }*/
+
+    $response->getBody()->write(json_encode($msg));
+    return $response;
+});
+
+$app->post('/delete_calificacion/', function (Request $request, Response $response, array $args) {
+    $data = json_decode($request->getBody()->getContents(),false);
+
+    $calificacion = DB::table('calificaciones')
+        ->where('id_calificacion',$data->id_calificacion)
+        ->delete();
+
+    // var_dump($user);
+    $msg = new stdClass();
+    $msg->mensaje = 'Error al eliminar';
+
+    if($calificacion){
+        $msg->mensaje = 'Calificación eliminada';
+    }
+
+    $response->getBody()->write(json_encode($msg));
+    return $response;
+});
+
+$app->post('/update/', function (Request $request, Response $response, array $args) {
+    $data = json_decode($request->getBody()->getContents(),false);
+
+    $calificacion = DB::table('calificaciones')
+        ->where('id_calificacion',$data->id_calificacion)
+        ->update(['calificacion'=>$data->calificacion]);
+
+
+     //var_dump($data);
+    $msg = new stdClass();
+    $msg->mensaje = 'Error al actualizar';
+
+    if($calificacion){
+        $msg->mensaje = 'Calificación actualizada';
+    }
+
     $response->getBody()->write(json_encode($msg));
     return $response;
 });

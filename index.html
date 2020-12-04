@@ -15,7 +15,8 @@
                 <h1>Sistema escolar v4</h1>
             </div>
             <!--<form action="login.php" method="POST">-->
-            <form action="api/index.php/login/" method="post">
+            <form action="inicio.php" method="post" id="inicio">
+
                 <div class="field">
                     <label class="label" for="usuario"> Usuario</label>
                     <input class="input" type="text" id="usuario" name="usuario">
@@ -24,6 +25,7 @@
                     <label class="label" for="password">Password</label>
                     <input class="input" type="password" id="password" name="password">
                 </div>
+                <input class="input" type="hidden" id="id_usuario" name="id_usuario" >
                 <div class="field">
                     <div class="control">
                         <input class="button" type="button" value="Enviar" onclick="login()">
@@ -48,7 +50,16 @@
                 .then(resp=> {
                     if(resp.data.aceptado){
                        alert(`Bienvenido:${resp.data.nombre_perfil}`)
-                        setTimeout(`location.href='inicio.php?id_usuario=${resp.data.id_usuario}'`,500)
+                        //perfil del Profesor
+                        if(resp.data.nombre_perfil == 'Profesor'){
+                           // $("#inicio").submit();
+                            document.getElementById("id_usuario").value=resp.data.id_usuario ;
+                            setTimeout(`document.getElementById("inicio").submit()`,500)
+                        }
+                        //perfil del Alumno
+                        else{
+                            setTimeout(`location.href='consultar_alumno.php?id_usuario=${resp.data.id_usuario}'`,500)
+                        }
                     }
                     else{
                         alert("El usuario y/o contraseña incorrectos")
